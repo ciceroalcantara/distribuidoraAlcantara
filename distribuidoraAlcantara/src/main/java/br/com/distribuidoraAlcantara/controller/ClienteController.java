@@ -33,25 +33,21 @@ public class ClienteController {
 	@Autowired // A classe ClienteRepository foi instanciada e ela esta sendo injetada dentro do controlador atraves da anotação "@Autowired"
 	private ClienteRepository clienteRepository;
 
-	// Método para salvar dados de cliente no banco de dados.
 	@PostMapping
-	public Cliente salvarCliente(@RequestBody Cliente cliente) { // A anotação @RequestBody pega os dados que vão no corpo da requisição e joga dentro da tabela de cliente no banco de dados
+	public Cliente salvarCliente(@RequestBody Cliente cliente) { // 
 		return this.clienteRepository.save(cliente);
 	}
 
-	// Método para listar todos os clientes no banco de dados
 	@GetMapping
 	public List<Cliente> listarCliente() {
 		return this.clienteRepository.findAll();
 	}
 	
-	// Método para deletar um cliente pelo Id
 	@DeleteMapping("/{id}")
 	public void deletarCliente (@PathVariable Long id) { // O @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
 		this.clienteRepository.deleteById(id);
 	}
 	
-	// Método para editar um registro de um cliente pelo id
 	@PutMapping("/{id}")
 	public Cliente editarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
 		Cliente clienteEditar = this.clienteRepository.findById(id).get();
