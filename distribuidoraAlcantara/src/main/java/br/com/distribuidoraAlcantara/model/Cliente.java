@@ -16,7 +16,7 @@ import lombok.Data;
  *
  */
 
-@Data // Cria automatico os Gets e os Sets no lombok
+@Data
 @Entity
 @Table(name = "tb_clientes")
 public class Cliente {
@@ -30,12 +30,44 @@ public class Cliente {
 	private String email;
 	private String telefone;
 
-	// Construtor
-	public Cliente(String nome, String cpf, String email, String telefone) {
-		super();
+	// Gets e Sets
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
 

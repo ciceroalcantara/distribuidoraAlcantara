@@ -15,18 +15,16 @@ import lombok.Data;
  * @author cicer
  *
  */
-
 @Data
 @Entity
-@Table(name = "tb_produtos")
-public class Produto {
+@Table(name = "tb_usuarios")
+public class Usuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String nome;
-	private int codigo;
-	private double preco;
+	private String login;
+	private String senha;
 
 	public Long getId() {
 		return id;
@@ -36,28 +34,20 @@ public class Produto {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getLogin() {
+		return login;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
-	public int getCodigo() {
-		return codigo;
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setCodigo(int codigo) {
-		this.codigo = codigo;
-	}
-
-	public double getPreco() {
-		return preco;
-	}
-
-	public void setPreco(double preco) {
-		this.preco = preco;
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 }

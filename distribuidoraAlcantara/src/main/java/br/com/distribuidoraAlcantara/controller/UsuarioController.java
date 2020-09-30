@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.distribuidoraAlcantara.model.Endereco;
-import br.com.distribuidoraAlcantara.repository.EnderecoRepository;
+import br.com.distribuidoraAlcantara.model.Usuario;
+import br.com.distribuidoraAlcantara.repository.UsuarioRepository;
 
 /**
  * @author cicer
@@ -25,33 +25,32 @@ import br.com.distribuidoraAlcantara.repository.EnderecoRepository;
  */
 
 @RestController
-@RequestMapping("/enderecos")
-public class EnderecoController {
+@RequestMapping("/usuarios")
+public class UsuarioController {
 
 	@Autowired
-	private EnderecoRepository enderecoRepository;
+	private UsuarioRepository usuarioRepository;
 
 	@PostMapping
-	public Endereco salvarEndereco(@RequestBody Endereco endereco) {
-		return this.enderecoRepository.save(endereco);
+	public Usuario salvarUsuario(@RequestBody Usuario usuario) {
+		return this.usuarioRepository.save(usuario);
 	}
 
 	@GetMapping
-	public List<Endereco> listarEndereco() {
-		return this.enderecoRepository.findAll();
+	public List<Usuario> listarUsuario() {
+		return this.usuarioRepository.findAll();
 	}
 
 	@DeleteMapping("/{id}")
-	public void deletarEndereco(@PathVariable Long id) {
-		this.enderecoRepository.deleteById(id);
+	public void deletarUsuario(@PathVariable Long id) {
+		this.usuarioRepository.deleteById(id);
 	}
 
 	@PutMapping("/{id}")
-	public Endereco editarEndereco(@PathVariable Long id, @RequestBody Endereco endereco) {
-		Endereco enderecoEditar = this.enderecoRepository.findById(id).get();
-		BeanUtils.copyProperties(endereco, enderecoEditar, "id");
-		this.enderecoRepository.save(enderecoEditar);
-		return enderecoEditar;
+	public Usuario editarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+		Usuario usuarioEditar = this.usuarioRepository.findById(id).get();
+		BeanUtils.copyProperties(usuario, usuarioEditar, "id");
+		this.usuarioRepository.save(usuarioEditar);
+		return usuarioEditar;
 	}
-
 }
