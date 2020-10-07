@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -31,11 +30,8 @@ public class Fornecedor {
 	private String nome;
 	private String cnpj;
 
-	@OneToMany(mappedBy = "fornecedor")
-	public List<Contato> contatos;
-
-	@ManyToMany(mappedBy = "fornecedor")
-	private List<Produto> produtos;
+	@ManyToMany
+	private List<Produto> produto;
 
 	public Long getId() {
 		return id;

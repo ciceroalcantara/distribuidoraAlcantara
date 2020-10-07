@@ -20,9 +20,6 @@ public class Contato {
 	private Long id;
 	private String email;
 	private String telefone;
-	
-	@ManyToOne
-	private Fornecedor fornecedor;
 
 	@ManyToOne
 	private Cliente cliente;
@@ -50,6 +47,14 @@ public class Contato {
 
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 }

@@ -33,13 +33,13 @@ public class Cliente {
 	private String cpf;
 
 	@OneToMany(mappedBy = "cliente")
-	public List<Contato> contatos;
+	public List<Contato> contato;
 
 	@OneToOne
 	public Endereco endereco;
 
 	@OneToMany(mappedBy = "cliente")
-	private List<Produto> produtos;
+	private List<Produto> produto;
 
 	// Gets e Sets
 	public Long getId() {
@@ -66,12 +66,12 @@ public class Cliente {
 		this.cpf = cpf;
 	}
 
-	public List<Contato> getContatos() {
-		return contatos;
+	public Endereco getEndereco() {
+		return endereco;
 	}
 
-	public void setContatos(List<Contato> contatos) {
-		this.contatos = contatos;
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 
 }
