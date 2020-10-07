@@ -3,10 +3,14 @@
  */
 package br.com.distribuidoraAlcantara.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -27,6 +31,12 @@ public class Produto {
 	private String nome;
 	private int codigo;
 	private double preco;
+
+	@ManyToOne
+	private Cliente cliente;
+
+	@ManyToMany
+	private List<Fornecedor> fornecedor;
 
 	public Long getId() {
 		return id;
@@ -59,5 +69,11 @@ public class Produto {
 	public void setPreco(double preco) {
 		this.preco = preco;
 	}
+
+	/*
+	 * public Cliente getCliente() { return cliente; }
+	 * 
+	 * public void setCliente(Cliente cliente) { this.cliente = cliente; }
+	 */
 
 }

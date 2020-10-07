@@ -3,10 +3,14 @@
  */
 package br.com.distribuidoraAlcantara.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -26,8 +30,12 @@ public class Fornecedor {
 	private Long id;
 	private String nome;
 	private String cnpj;
-	private String email;
-	private String telefone;
+
+	@OneToMany(mappedBy = "fornecedor")
+	public List<Contato> contatos;
+
+	@ManyToMany(mappedBy = "fornecedor")
+	private List<Produto> produtos;
 
 	public Long getId() {
 		return id;
@@ -51,22 +59,6 @@ public class Fornecedor {
 
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
 	}
 
 }
