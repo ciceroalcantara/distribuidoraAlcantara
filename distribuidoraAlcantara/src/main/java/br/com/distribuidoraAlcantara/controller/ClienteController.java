@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Cliente;
-import br.com.distribuidoraAlcantara.repository.ClienteRepository;
+import br.com.distribuidoraAlcantara.service.ClienteService;
 
 /**
  * @author cicer
@@ -25,39 +28,67 @@ import br.com.distribuidoraAlcantara.repository.ClienteRepository;
  */
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/clientes/api")
 public class ClienteController {
 
-	// Composição da classe ClienteRepository com a classe ClienteController, junção
-	// do controller com o banco de dados.
-	@Autowired // A classe ClienteRepository foi instanciada e ela esta sendo injetada dentro do controlador atraves da anotação "@Autowired"
-	private ClienteRepository clienteRepository;
+	@Autowired
+	private ClienteService service;
 
-	// Método para salvar dados de cliente no banco de dados.
-	@PostMapping
-	public Cliente salvarCliente(@RequestBody Cliente cliente) { // A anotação @RequestBody pega os dados que vão no corpo da requisição e joga dentro da tabela de cliente no banco de dados
-		return this.clienteRepository.save(cliente);
-	}
-
-	// Método para listar todos os clientes no banco de dados
-	@GetMapping
-	public List<Cliente> listarCliente() {
-		return this.clienteRepository.findAll();
+/* ---------------------------------------------------------------------------------- */	
+	
+	@PostMapping("/v1")
+	public Cliente salvarClienteV1(@RequestBody Cliente cliente) {
+		return this.service.salvar(cliente);
 	}
 	
-	// Método para deletar um cliente pelo Id
-	@DeleteMapping("/{id}")
-	public void deletarCliente (@PathVariable Long id) { // O @PathVariable é utilizado quando o valor da variável é passada diretamente na URL
-		this.clienteRepository.deleteById(id);
+	@PostMapping("/v2")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Cliente> salvarClienteV2(@RequestBody Cliente cliente) {
+		return ResponseEntity.ok().body(this.service.salvar(cliente));
 	}
 	
-	// Método para editar um registro de um cliente pelo id
-	@PutMapping("/{id}")
-	public Cliente editarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-		Cliente clienteEditar = this.clienteRepository.findById(id).get();
+/* ---------------------------------------------------------------------------------- */
+	
+	@GetMapping("/v1")
+	public List<Cliente> listarClientev1() {
+		return this.service.listaClientes();
+	}
+	
+	@GetMapping("/v2")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<List<Cliente>> listarClientev2() {
+		return ResponseEntity.ok().body(this.service.listaClientes());
+	}
+	
+/* ---------------------------------------------------------------------------------- */
+	
+	@DeleteMapping("v1/{id}")
+	public void deletarClienteV1 (@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdCliente(id));
+	}
+	
+	@DeleteMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Cliente> deletarClienteV2 (@PathVariable Long id) {
+		return ResponseEntity.ok().body(this.service.buscaPorIdCliente(id));
+	}
+	
+/* ---------------------------------------------------------------------------------- */	
+	
+	@PutMapping("v1/{id}")
+	public Cliente editarClienteV1(@PathVariable Long id, @RequestBody Cliente cliente) {
+		Cliente clienteEditar = this.service.buscaPorIdCliente(id);
 		BeanUtils.copyProperties(cliente, clienteEditar, "id");
-		this.clienteRepository.save(clienteEditar);
+		this.service.salvar(clienteEditar);
 		return clienteEditar;
+	}	
+	
+	@PutMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Cliente> editarClienteV2(@PathVariable Long id, @RequestBody Cliente cliente) {
+		Cliente clienteEditar = this.service.buscaPorIdCliente(id);
+		BeanUtils.copyProperties(cliente, clienteEditar, "id");
+		return ResponseEntity.ok().body(this.service.salvar(clienteEditar));
 	}	
 
 }

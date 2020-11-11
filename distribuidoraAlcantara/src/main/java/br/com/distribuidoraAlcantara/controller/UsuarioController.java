@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Usuario;
-import br.com.distribuidoraAlcantara.repository.UsuarioRepository;
+import br.com.distribuidoraAlcantara.service.UsuarioService;
 
 /**
  * @author cicer
@@ -25,32 +28,67 @@ import br.com.distribuidoraAlcantara.repository.UsuarioRepository;
  */
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/usuarios/api")
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private UsuarioService service;
 
-	@PostMapping
-	public Usuario salvarUsuario(@RequestBody Usuario usuario) {
-		return this.usuarioRepository.save(usuario);
+/* ---------------------------------------------------------------------------------- */	
+	
+	@PostMapping("/v1")
+	public Usuario salvarUsuarioV1(@RequestBody Usuario usuario) {
+		return this.service.salvar(usuario);
+	}
+	
+	@PostMapping("/v2")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Usuario> salvarUsuarioV2(@RequestBody Usuario usuario) {
+		return ResponseEntity.ok().body(this.service.salvar(usuario));
 	}
 
-	@GetMapping
-	public List<Usuario> listarUsuario() {
-		return this.usuarioRepository.findAll();
+/* ---------------------------------------------------------------------------------- */
+	
+	@GetMapping("/v1")
+	public List<Usuario> listarUsuarioV1() {
+		return this.service.listaUsuarios();
+	}
+	
+	@GetMapping("/v2")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<List<Usuario>> listarUsuarioV2() {
+		return ResponseEntity.ok().body(this.service.listaUsuarios());
+	}
+	
+/* ---------------------------------------------------------------------------------- */
+
+	@DeleteMapping("v1/{id}")
+	public void deletarUsuarioV1(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdUsuario(id));
+	}
+	
+	@DeleteMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Usuario> deletarUsuarioV2(@PathVariable Long id) {
+		return ResponseEntity.ok().body(this.service.buscaPorIdUsuario(id));
 	}
 
-	@DeleteMapping("/{id}")
-	public void deletarUsuario(@PathVariable Long id) {
-		this.usuarioRepository.deleteById(id);
-	}
-
-	@PutMapping("/{id}")
-	public Usuario editarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
-		Usuario usuarioEditar = this.usuarioRepository.findById(id).get();
+/* ---------------------------------------------------------------------------------- */
+	
+	@PutMapping("v1/{id}")
+	public Usuario editarUsuarioV1(@PathVariable Long id, @RequestBody Usuario usuario) {
+		Usuario usuarioEditar = this.service.buscaPorIdUsuario(id);
 		BeanUtils.copyProperties(usuario, usuarioEditar, "id");
-		this.usuarioRepository.save(usuarioEditar);
+		this.service.salvar(usuarioEditar);
 		return usuarioEditar;
 	}
+	
+	@PutMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Usuario> editarUsuarioV2(@PathVariable Long id, @RequestBody Usuario usuario) {
+		Usuario usuarioEditar = this.service.buscaPorIdUsuario(id);
+		BeanUtils.copyProperties(usuario, usuarioEditar, "id");
+		return ResponseEntity.ok().body(this.service.salvar(usuarioEditar));
+	}
+	
 }

@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Endereco;
-import br.com.distribuidoraAlcantara.repository.EnderecoRepository;
+import br.com.distribuidoraAlcantara.service.EnderecoService;
 
 /**
  * @author cicer
@@ -25,33 +28,67 @@ import br.com.distribuidoraAlcantara.repository.EnderecoRepository;
  */
 
 @RestController
-@RequestMapping("/enderecos")
+@RequestMapping("/enderecos/api")
 public class EnderecoController {
 
 	@Autowired
-	private EnderecoRepository enderecoRepository;
+	private EnderecoService service;
 
-	@PostMapping
-	public Endereco salvarEndereco(@RequestBody Endereco endereco) {
-		return this.enderecoRepository.save(endereco);
+/* ---------------------------------------------------------------------------------- */
+	
+	@PostMapping("/v1")
+	public Endereco salvarEnderecoV1(@RequestBody Endereco endereco) {
+		return this.service.salvar(endereco);
+	}
+	
+	@PostMapping("/v2")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Endereco> salvarEnderecoV2(@RequestBody Endereco endereco) {
+		return ResponseEntity.ok().body(this.service.salvar(endereco));
 	}
 
-	@GetMapping
-	public List<Endereco> listarEndereco() {
-		return this.enderecoRepository.findAll();
+/* ---------------------------------------------------------------------------------- */
+	
+	@GetMapping("/v1")
+	public List<Endereco> listarEnderecoV1() {
+		return this.service.listaEnderecos();
+	}
+	
+	@GetMapping("/v2")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<List<Endereco>> listarEnderecoV2() {
+		return ResponseEntity.ok().body(this.service.listaEnderecos());
 	}
 
-	@DeleteMapping("/{id}")
-	public void deletarEndereco(@PathVariable Long id) {
-		this.enderecoRepository.deleteById(id);
+/* ---------------------------------------------------------------------------------- */
+	
+	@DeleteMapping("v1/{id}")
+	public void deletarEnderecoV1(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdEndereco(id));
+	}
+	
+	@DeleteMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Endereco> deletarEnderecoV2(@PathVariable Long id) {
+		return ResponseEntity.ok().body(this.service.buscaPorIdEndereco(id));
 	}
 
-	@PutMapping("/{id}")
-	public Endereco editarEndereco(@PathVariable Long id, @RequestBody Endereco endereco) {
-		Endereco enderecoEditar = this.enderecoRepository.findById(id).get();
+/* ---------------------------------------------------------------------------------- */
+	
+	@PutMapping("v1/{id}")
+	public Endereco editarEnderecoV1(@PathVariable Long id, @RequestBody Endereco endereco) {
+		Endereco enderecoEditar = this.service.buscaPorIdEndereco(id);
 		BeanUtils.copyProperties(endereco, enderecoEditar, "id");
-		this.enderecoRepository.save(enderecoEditar);
+		this.service.salvar(enderecoEditar);
 		return enderecoEditar;
+	}
+	
+	@PutMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Endereco> editarEnderecoV2(@PathVariable Long id, @RequestBody Endereco endereco) {
+		Endereco enderecoEditar = this.service.buscaPorIdEndereco(id);
+		BeanUtils.copyProperties(endereco, enderecoEditar, "id");
+		return ResponseEntity.ok().body(this.service.salvar(enderecoEditar));
 	}
 
 }

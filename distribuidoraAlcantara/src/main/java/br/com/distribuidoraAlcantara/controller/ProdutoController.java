@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Produto;
-import br.com.distribuidoraAlcantara.repository.ProdutoRepository;
+import br.com.distribuidoraAlcantara.service.ProdutoService;
 
 /**
  * @author cicer
@@ -25,32 +28,67 @@ import br.com.distribuidoraAlcantara.repository.ProdutoRepository;
  */
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("/produtos/api")
 public class ProdutoController {
 
 	@Autowired
-	private ProdutoRepository produtoRepository;
+	private ProdutoService service;
 
-	@PostMapping
-	public Produto salvarProduto(@RequestBody Produto produto) {
-		return this.produtoRepository.save(produto);
+/* ---------------------------------------------------------------------------------- */
+	
+	@PostMapping("/v1")
+	public Produto salvarProdutoV1(@RequestBody Produto produto) {
+		return this.service.salvar(produto);
+	}
+	
+	@PostMapping("/v2")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Produto> salvarProdutoV2(@RequestBody Produto produto) {
+		return ResponseEntity.ok().body(this.service.salvar(produto));
 	}
 
-	@GetMapping
-	public List<Produto> listarProduto() {
-		return this.produtoRepository.findAll();
+/* ---------------------------------------------------------------------------------- */
+	
+	@GetMapping("/v1")
+	public List<Produto> listarProdutoV1() {
+		return this.service.listarProdutos();
+	}
+	
+	@GetMapping("/v2")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<List<Produto>> listarProdutoV2() {
+		return ResponseEntity.ok().body(this.service.listarProdutos());
 	}
 
-	@DeleteMapping("/{id}")
-	public void deletarProduto(@PathVariable Long id) {
-		this.produtoRepository.deleteById(id);
+/* ---------------------------------------------------------------------------------- */
+	
+	@DeleteMapping("v1/{id}")
+	public void deletarProdutoV1(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorId(id));
+	}
+	
+	@DeleteMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Produto> deletarProdutoV2(@PathVariable Long id) {
+		return ResponseEntity.ok().body(this.service.buscaPorId(id));
 	}
 
-	@PutMapping("/{id}")
-	public Produto editarProduto(@PathVariable Long id, @RequestBody Produto produto) {
-		Produto produtoEditar = this.produtoRepository.findById(id).get();
+/* ---------------------------------------------------------------------------------- */
+	
+	@PutMapping("v1/{id}")
+	public Produto editarProdutoV1(@PathVariable Long id, @RequestBody Produto produto) {
+		Produto produtoEditar = this.service.buscaPorId(id);
 		BeanUtils.copyProperties(produto, produtoEditar, "id");
-		this.produtoRepository.save(produtoEditar);
+		this.service.salvar(produtoEditar);
 		return produtoEditar;
 	}
+	
+	@PutMapping("v2/{id}")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public ResponseEntity<Produto> editarProdutoV2(@PathVariable Long id, @RequestBody Produto produto) {
+		Produto produtoEditar = this.service.buscaPorId(id);
+		BeanUtils.copyProperties(produto, produtoEditar, "id");
+		return ResponseEntity.ok().body(this.service.salvar(produtoEditar));
+	}
+	
 }

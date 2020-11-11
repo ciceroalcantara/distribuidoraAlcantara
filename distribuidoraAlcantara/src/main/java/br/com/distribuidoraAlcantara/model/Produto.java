@@ -3,6 +3,7 @@
  */
 package br.com.distribuidoraAlcantara.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
 
@@ -23,8 +26,10 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "tb_produtos")
-public class Produto {
+public class Produto implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,6 +37,7 @@ public class Produto {
 	private int codigo;
 	private double preco;
 
+	@JsonBackReference
 	@ManyToOne
 	private Cliente cliente;
 
