@@ -15,6 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
@@ -24,6 +25,7 @@ import lombok.Data;
  *
  */
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Entity
 @Table(name = "tb_clientes")

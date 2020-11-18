@@ -10,12 +10,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 /**
  * @author cicer
  *
  */
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Entity
 @Table(name = "tb_enderecos")

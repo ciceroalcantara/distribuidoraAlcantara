@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Contato;
 import br.com.distribuidoraAlcantara.service.ContatoService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/contatos/api")
@@ -33,6 +34,10 @@ public class ContatoController {
 		return this.service.salvar(contato);
 	}
 	
+	@ApiOperation(
+			value="Cadastrar um Contato novo", 
+			response=ResponseEntity.class, 
+			notes="Essa operação salva um novo registro com as informações do Contato.")
 	@PostMapping("/v2")
 	public ResponseEntity<Contato> salvarContatoV2(@RequestBody Contato contato) {
 		return ResponseEntity.ok().body(this.service.salvar(contato));
@@ -60,8 +65,9 @@ public class ContatoController {
 	
 	@DeleteMapping("v2/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<Contato> deletarContatoV2(@PathVariable Long id) {
-		return ResponseEntity.ok().body(this.service.buscaPorIdContato(id));
+	public String deletarContatoV2(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdContato(id));
+		return "Contato informado excluído com sucesso!";
 	}
 	
 /* ---------------------------------------------------------------------------------- */

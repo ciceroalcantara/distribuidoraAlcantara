@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Produto;
 import br.com.distribuidoraAlcantara.service.ProdutoService;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author cicer
@@ -41,6 +42,10 @@ public class ProdutoController {
 		return this.service.salvar(produto);
 	}
 	
+	@ApiOperation(
+			value="Cadastrar um Produto novo", 
+			response=ResponseEntity.class, 
+			notes="Essa operação salva um novo registro com as informações do Produto.")
 	@PostMapping("/v2")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<Produto> salvarProdutoV2(@RequestBody Produto produto) {
@@ -69,8 +74,9 @@ public class ProdutoController {
 	
 	@DeleteMapping("v2/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<Produto> deletarProdutoV2(@PathVariable Long id) {
-		return ResponseEntity.ok().body(this.service.buscaPorId(id));
+	public String deletarProdutoV2(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorId(id));
+		return "Produto informado excluído com sucesso!";
 	}
 
 /* ---------------------------------------------------------------------------------- */

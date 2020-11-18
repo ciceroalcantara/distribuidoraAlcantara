@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Endereco;
 import br.com.distribuidoraAlcantara.service.EnderecoService;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author cicer
@@ -41,6 +42,10 @@ public class EnderecoController {
 		return this.service.salvar(endereco);
 	}
 	
+	@ApiOperation(
+			value="Cadastrar um Endereco novo", 
+			response=ResponseEntity.class, 
+			notes="Essa operação salva um novo registro com as informações do Endereco.")
 	@PostMapping("/v2")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<Endereco> salvarEnderecoV2(@RequestBody Endereco endereco) {
@@ -69,8 +74,9 @@ public class EnderecoController {
 	
 	@DeleteMapping("v2/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<Endereco> deletarEnderecoV2(@PathVariable Long id) {
-		return ResponseEntity.ok().body(this.service.buscaPorIdEndereco(id));
+	public String deletarEnderecoV2(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdEndereco(id));
+		return "Endereco informado excluído com sucesso!";
 	}
 
 /* ---------------------------------------------------------------------------------- */

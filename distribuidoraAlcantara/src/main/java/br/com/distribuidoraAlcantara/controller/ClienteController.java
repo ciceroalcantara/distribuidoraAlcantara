@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Cliente;
 import br.com.distribuidoraAlcantara.service.ClienteService;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author cicer
@@ -41,6 +42,10 @@ public class ClienteController {
 		return this.service.salvar(cliente);
 	}
 	
+	@ApiOperation(
+			value="Cadastrar um Cliente novo", 
+			response=ResponseEntity.class, 
+			notes="Essa operação salva um novo registro com as informações do Cliente.")
 	@PostMapping("/v2")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<Cliente> salvarClienteV2(@RequestBody Cliente cliente) {
@@ -69,10 +74,11 @@ public class ClienteController {
 	
 	@DeleteMapping("v2/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<Cliente> deletarClienteV2 (@PathVariable Long id) {
-		return ResponseEntity.ok().body(this.service.buscaPorIdCliente(id));
+	public String deletarClienteV2 (@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdCliente(id));
+		return "Cliente informado excluído com sucesso!";
 	}
-	
+		
 /* ---------------------------------------------------------------------------------- */	
 	
 	@PutMapping("v1/{id}")
@@ -89,6 +95,8 @@ public class ClienteController {
 		Cliente clienteEditar = this.service.buscaPorIdCliente(id);
 		BeanUtils.copyProperties(cliente, clienteEditar, "id");
 		return ResponseEntity.ok().body(this.service.salvar(clienteEditar));
-	}	
+	}
+	
+
 
 }

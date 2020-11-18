@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Fornecedor;
 import br.com.distribuidoraAlcantara.service.FornecedorService;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author cicer
@@ -41,6 +42,10 @@ public class FornecedorController {
 		return this.service.salvar(fornecedor);
 	}
 	
+	@ApiOperation(
+			value="Cadastrar um Fornecedor novo", 
+			response=ResponseEntity.class, 
+			notes="Essa operação salva um novo registro com as informações do Fornecedor.")
 	@PostMapping("/v2")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<Fornecedor> salvarFornecedorV2(@RequestBody Fornecedor fornecedor) {
@@ -69,8 +74,9 @@ public class FornecedorController {
 	
 	@DeleteMapping("v2/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<Fornecedor> deletarFornecedorV2(@PathVariable Long id) {
-		return ResponseEntity.ok().body(this.service.buscaPorIdFornecedor(id));
+	public String deletarFornecedorV2(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdFornecedor(id));
+		return "Fornecedor informado excluído com sucesso!";
 	}
 
 /* ---------------------------------------------------------------------------------- */

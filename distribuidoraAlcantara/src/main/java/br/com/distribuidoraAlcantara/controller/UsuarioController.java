@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.distribuidoraAlcantara.model.Usuario;
 import br.com.distribuidoraAlcantara.service.UsuarioService;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author cicer
@@ -41,6 +42,10 @@ public class UsuarioController {
 		return this.service.salvar(usuario);
 	}
 	
+	@ApiOperation(
+			value="Cadastrar um Usuario novo", 
+			response=ResponseEntity.class, 
+			notes="Essa operação salva um novo registro com as informações do Usuario.")
 	@PostMapping("/v2")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<Usuario> salvarUsuarioV2(@RequestBody Usuario usuario) {
@@ -69,10 +74,11 @@ public class UsuarioController {
 	
 	@DeleteMapping("v2/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<Usuario> deletarUsuarioV2(@PathVariable Long id) {
-		return ResponseEntity.ok().body(this.service.buscaPorIdUsuario(id));
+	public String deletarUsuarioV2(@PathVariable Long id) {
+		this.service.remover(this.service.buscaPorIdUsuario(id));
+		return "Usuario informado excluído com sucesso!";
 	}
-
+	
 /* ---------------------------------------------------------------------------------- */
 	
 	@PutMapping("v1/{id}")

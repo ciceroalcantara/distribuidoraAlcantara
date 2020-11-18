@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
 
@@ -23,6 +24,7 @@ import lombok.Data;
  *
  */
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Entity
 @Table(name = "tb_produtos")
